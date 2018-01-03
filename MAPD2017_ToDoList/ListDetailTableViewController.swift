@@ -10,33 +10,71 @@ import UIKit
 
 class ListDetailTableViewController: UITableViewController {
 
+    @IBAction func onCancel(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @IBOutlet weak var saveButton: UIBarButtonItem!
+    
+    
+    @IBOutlet weak var listTextField: UITextField!
+    
+    var list: List?
+    var lists: [List]!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    // MARK: - Navigation
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        
+        if saveButton === sender as? UIBarButtonItem {
+            
+            guard let name = listTextField.text else { return true }
+            
+            if (name.isEmpty) {
+                let alert = UIAlertController(title: "Blank Field", message:
+                    "List Name cannot be left blank", preferredStyle: UIAlertControllerStyle.alert)
+                
+                alert.addAction(UIAlertAction(title: "Okay!", style: UIAlertActionStyle.default,handler: nil))
+                
+                self.present(alert, animated: true, completion: nil)
 
-    // MARK: - Table view data source
+                return false
+                
+            } else {
+                return true
+                
+            }
+            
+        }
+        
+        return true
+    }
+    
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if saveButton === sender as? UIBarButtonItem {
+            
+            guard let name = listTextField.text else { return }
+
+            list = List(name: name, task: [])
+            
+        }
+        
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
-    }
-
+ 
     /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)

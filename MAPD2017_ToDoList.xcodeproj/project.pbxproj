@@ -12,6 +12,10 @@
 		6D066BD31FF1694B006F8ACC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D066BD21FF1694B006F8ACC /* Assets.xcassets */; };
 		6D066BD61FF1694B006F8ACC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D066BD41FF1694B006F8ACC /* LaunchScreen.storyboard */; };
 		6D066BDE1FF175AD006F8ACC /* ListDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D066BDD1FF175AD006F8ACC /* ListDetailTableViewController.swift */; };
+		6D2B29FE1FFD4EE5004305DA /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2B29FD1FFD4EE5004305DA /* Task.swift */; };
+		6DD033DE1FF9588400CD5395 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD033DD1FF9588400CD5395 /* ListViewController.swift */; };
+		6DD033E01FF958B700CD5395 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD033DF1FF958B700CD5395 /* List.swift */; };
+		6DD033E21FF959B500CD5395 /* ListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD033E11FF959B500CD5395 /* ListViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +26,10 @@
 		6D066BD51FF1694B006F8ACC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6D066BD71FF1694B006F8ACC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6D066BDD1FF175AD006F8ACC /* ListDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListDetailTableViewController.swift; sourceTree = "<group>"; };
+		6D2B29FD1FFD4EE5004305DA /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		6DD033DD1FF9588400CD5395 /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
+		6DD033DF1FF958B700CD5395 /* List.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
+		6DD033E11FF959B500CD5395 /* ListViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +68,10 @@
 				6D066BD41FF1694B006F8ACC /* LaunchScreen.storyboard */,
 				6D066BD71FF1694B006F8ACC /* Info.plist */,
 				6D066BDD1FF175AD006F8ACC /* ListDetailTableViewController.swift */,
+				6DD033DD1FF9588400CD5395 /* ListViewController.swift */,
+				6DD033DF1FF958B700CD5395 /* List.swift */,
+				6DD033E11FF959B500CD5395 /* ListViewCell.swift */,
+				6D2B29FD1FFD4EE5004305DA /* Task.swift */,
 			);
 			path = MAPD2017_ToDoList;
 			sourceTree = "<group>";
@@ -138,7 +150,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D066BDE1FF175AD006F8ACC /* ListDetailTableViewController.swift in Sources */,
+				6DD033E01FF958B700CD5395 /* List.swift in Sources */,
+				6DD033E21FF959B500CD5395 /* ListViewCell.swift in Sources */,
 				6D066BCC1FF1694B006F8ACC /* AppDelegate.swift in Sources */,
+				6D2B29FE1FFD4EE5004305DA /* Task.swift in Sources */,
+				6DD033DE1FF9588400CD5395 /* ListViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,6 +320,7 @@
 				6D066BDC1FF1694B006F8ACC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
