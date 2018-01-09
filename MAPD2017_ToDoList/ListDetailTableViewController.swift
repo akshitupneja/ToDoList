@@ -7,23 +7,66 @@
 //
 
 import UIKit
+import os.log
 
-class ListDetailTableViewController: UITableViewController {
+class ListDetailTableViewController: UITableViewController, UITextFieldDelegate, UINavigationControllerDelegate {
 
     @IBAction func onCancel(_ sender: UIBarButtonItem) {
-        dismiss(animated: true, completion: nil)
+        let isPresentingInAddListMode = presentingViewController is UINavigationController
+        
+        if isPresentingInAddListMode {
+            dismiss(animated: true, completion: nil)
+        }
+        else if let owningNavigationController = navigationController{
+            owningNavigationController.popViewController(animated: true)
+        }
+        else {
+            fatalError("The MealViewController is not inside a navigation controller.")
+        }
     }
     
     @IBOutlet weak var saveButton: UIBarButtonItem!
     
+    @IBOutlet weak var titleTextField: UITextField!
     
-    @IBOutlet weak var listTextField: UITextField!
+    @IBOutlet weak var notesTextField: UITextField!
+
     
     var list: List?
-    var lists: [List]!
+
+    
+    //MARK: UITextFieldDelegate
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        // Disable the Save button while editing.
+        saveButton.isEnabled = false
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // Hide the keyboard.
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        updateSaveButtonState()
+        navigationItem.title = textField.text
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Handle the text field’s user input through delegate callbacks.
+       titleTextField.delegate = self
+        
+        // Set up views if editing an existing Meal.
+        if let list = list {
+            navigationItem.title = list.title
+            titleTextField.text = list.title
+            notesTextField.text = list.notes
+        }
+        
+        // Enable the Save button only if the text field has a valid Meal name.
+        updateSaveButtonState()
         
     }
     
@@ -34,44 +77,33 @@ class ListDetailTableViewController: UITableViewController {
     
     // MARK: - Navigation
     
-    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        
-        if saveButton === sender as? UIBarButtonItem {
-            
-            guard let name = listTextField.text else { return true }
-            
-            if (name.isEmpty) {
-                let alert = UIAlertController(title: "Blank Field", message:
-                    "List Name cannot be left blank", preferredStyle: UIAlertControllerStyle.alert)
-                
-                alert.addAction(UIAlertAction(title: "Okay!", style: UIAlertActionStyle.default,handler: nil))
-                
-                self.present(alert, animated: true, completion: nil)
-
-                return false
-                
-            } else {
-                return true
-                
-            }
-            
-        }
-        
-        return true
-    }
+   
     
 
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if saveButton === sender as? UIBarButtonItem {
-            
-            guard let name = listTextField.text else { return }
-
-            list = List(name: name, task: [])
-            
+        super.prepare(for: segue, sender: sender)
+        
+        // Configure the destination view controller only when the save button is pressed.
+        guard let button = sender as? UIBarButtonItem, button === saveButton else {
+            os_log("The save button was not pressed, cancelling", log: OSLog.default, type: .debug)
+            return
         }
         
+        let title = titleTextField.text ?? ""
+        let notes = notesTextField.text ?? ""
+        
+        
+        // Set the meal to be passed to MealTableViewController after the unwind segue.
+        list = List(title: title, notes: notes, isCompleted: false)
+        
+    }
+    
+    private func updateSaveButtonState() {
+        // Disable the Save button if the text field is empty.
+        let text = titleTextField.text ?? ""
+        saveButton.isEnabled = !text.isEmpty
     }
 
  

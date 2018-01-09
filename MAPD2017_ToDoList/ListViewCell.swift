@@ -10,8 +10,10 @@ import UIKit
 
 class ListViewCell: UITableViewCell {
 
+
+    @IBOutlet weak var title: UILabel!
     
-    @IBOutlet weak var listNameLabel: UILabel!
+    @IBOutlet weak var subtitle: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

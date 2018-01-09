@@ -9,13 +9,13 @@
 import UIKit
 
 class Task {
-    var taskName: String
+    var name: String
     var description: String?
     var isCompleted: Bool = false
 
     
-    init(title providedTitle: String, description providedDescription: String?) {
-        taskName = providedTitle
+    init(name providedTitle: String, description providedDescription: String?) {
+        name = providedTitle
         description = providedDescription
        
     }

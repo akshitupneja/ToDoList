@@ -7,23 +7,30 @@
 //
 
 import UIKit
+import os.log
 
 class ListViewController: UITableViewController {
-    var lists: [List] = [
-        List(name: "Home", task: [])
-    ]
     
-       // MARK: Functions
+    var lists = [List]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
+        // Use the edit button item provided by the table view controller.
+        navigationItem.leftBarButtonItem = editButtonItem
         
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        self.navigationItem.leftBarButtonItem = self.editButtonItem
+        // Load any saved meals, otherwise load sample data.
+        if let savedLists = loadLists() {
+            lists += savedLists
+        }
+        else {
+            // Load the sample data.
+            loadSampleLists()
+        }
     }
+
     
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -42,11 +49,12 @@ class ListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "listName", for: indexPath) as! ListViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ListViewCell", for: indexPath) as! ListViewCell
         
-        let list = lists[(indexPath as NSIndexPath).row]
+        let list = lists[indexPath.row]
         
-        cell.listNameLabel.text = list.listName
+        cell.title.text = list.title
+        cell.subtitle.text = list.notes
         //cell.backgroundColor = list.color
         //cell.listNameLabel.textColor = UIColor.white
         
@@ -67,6 +75,7 @@ class ListViewController: UITableViewController {
         if editingStyle == .delete {
             
             lists.remove(at: indexPath.row)
+            saveLists()
             //self.tableView.reloadData()
             tableView.deleteRows(at: [indexPath], with: .fade)
             
@@ -90,24 +99,8 @@ class ListViewController: UITableViewController {
     }
     
     
-   /* override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        
-        let row = indexPath.row
-        let listData = lists[row]
-        
-        displayListData(data: listData)
-        
-    }
-    */
-    
-    /*func displayListData(data: List) {
-        performSegue(withIdentifier: "ToListItems", sender: data)
-    }*/
-    
-    //    func displayAddList(data: [List]) {
-    //        performSegue(withIdentifier: "ToAddList", sender: data)
-    //    }
+   
+
     
     // MARK: - Navigation
     
@@ -116,26 +109,31 @@ class ListViewController: UITableViewController {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
+        super.prepare(for: segue, sender: sender)
         
-        /*if segue.identifier == "ToListItems" {
-            print("showing list's items")
+        switch(segue.identifier ?? "") {
             
-            //            let backItem = UIBarButtonItem()
-            //            backItem.title = ""
-            //            navigationItem.backBarButtonItem = backItem
+        case "AddList":
+            os_log("Adding a new meal.", log: OSLog.default, type: .debug)
             
-            //guard let listData = sender as? List else { return }
-            /*guard let itemTableViewController = segue.destination as? ItemTableViewController else { return
+        case "ShowDetail":
+            guard let ListDetailViewController = segue.destination as? ListDetailTableViewController else {
+                fatalError("Unexpected destination: \(segue.destination)")
             }
             
-            itemTableViewController.listData = listData
-            */
-        }
-        */
-        if segue.identifier == "ToAddList" {
+            guard let selectedListCell = sender as? ListViewCell else {
+                fatalError("Unexpected sender: \(String(describing: sender))")
+            }
             
-            print("Adding a list")
+            guard let indexPath = tableView.indexPath(for: selectedListCell) else {
+                fatalError("The selected cell is not being displayed by the table")
+            }
             
+            let selectedList = lists[indexPath.row]
+            ListDetailViewController.list = selectedList
+            
+        default:
+            fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
         }
         
         
@@ -145,13 +143,54 @@ class ListViewController: UITableViewController {
         
         if let sourceViewController = sender.source as? ListDetailTableViewController, let list = sourceViewController.list {
             
-            // Add a new list.
-            let newIndexPath = NSIndexPath(row: lists.count, section: 0)
-            lists.append(list)
-            tableView.insertRows(at: [newIndexPath as IndexPath], with: .bottom)
+            if let selectedIndexPath = tableView.indexPathForSelectedRow {
+                // Update an existing meal.
+                lists[selectedIndexPath.row] = list
+                tableView.reloadRows(at: [selectedIndexPath], with: .none)
+            }
+            else {
+                // Add a new meal.
+                let newIndexPath = IndexPath(row: lists.count, section: 0)
+                
+                lists.append(list)
+                tableView.insertRows(at: [newIndexPath], with: .automatic)
+            }
+            
+            // Save the meals.
+            saveLists()
         }
         
+    }
+    
+    
+    //MARK: Private Methods
+    
+    private func loadSampleLists() {
         
+
+        
+        guard let list1 = List(title: "Complete Homework", notes: "photo1", isCompleted: false) else {
+            fatalError("Unable to instantiate meal1")
+        }
+        
+        guard let list2 = List(title: "Buy Groceries", notes: "", isCompleted: false) else {
+            fatalError("Unable to instantiate meal1")
+        }
+        
+        lists += [list1, list2]
+    }
+    
+    private func saveLists() {
+        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(lists, toFile: List.ArchiveURL.path)
+        if isSuccessfulSave {
+            os_log("Meals successfully saved.", log: OSLog.default, type: .debug)
+        } else {
+            os_log("Failed to save meals...", log: OSLog.default, type: .error)
+        }
+    }
+    
+    private func loadLists() -> [List]?  {
+        return NSKeyedUnarchiver.unarchiveObject(withFile: List.ArchiveURL.path) as? [List]
     }
     /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
