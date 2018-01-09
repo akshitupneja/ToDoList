@@ -57,6 +57,33 @@ class ListViewController: UITableViewController {
         cell.subtitle.text = list.notes
         //cell.backgroundColor = list.color
         //cell.listNameLabel.textColor = UIColor.white
+        //on checkbox click
+        cell.onClick = { cell in
+            
+            guard let indexPath = tableView.indexPath(for: cell) else { return }
+            
+            let list = self.lists[indexPath.row]
+            print("Row \(list.title) " )
+            
+            //switch status
+            list.isCompleted = !list.isCompleted
+            self.saveLists()
+            tableView.reloadData()
+        }
+        
+        //returning correct icons and colors for each item's status
+        if list.isCompleted {
+            // Introducing the statusji™
+            cell.title.textColor = UIColor.gray
+            cell.subtitle.textColor = UIColor.gray
+            cell.checkboxImage.image = UIImage(named:"checked")
+        } else {
+          
+            cell.title.textColor = UIColor.black
+            cell.subtitle.textColor = UIColor.black
+            cell.checkboxImage.image = UIImage(named:"not-checked")
+        }
+        
         
         return cell
     }

@@ -10,11 +10,16 @@ import UIKit
 
 class ListViewCell: UITableViewCell {
 
-
+    @IBOutlet weak var checkboxButton: UIButton!
+    @IBOutlet weak var checkboxImage: UIImageView!
     @IBOutlet weak var title: UILabel!
-    
     @IBOutlet weak var subtitle: UILabel!
     
+      var onClick: ( (ListViewCell) -> () )?
+    
+    @IBAction func tapped(_ sender: UIButton) {
+        onClick?(self)
+    }
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

@@ -24,49 +24,33 @@ class ListDetailTableViewController: UITableViewController, UITextFieldDelegate,
             fatalError("The MealViewController is not inside a navigation controller.")
         }
     }
+  
     
     @IBOutlet weak var saveButton: UIBarButtonItem!
     
     @IBOutlet weak var titleTextField: UITextField!
     
-    @IBOutlet weak var notesTextField: UITextField!
 
+    @IBOutlet weak var notesTextView: UITextView!
     
     var list: List?
 
     
-    //MARK: UITextFieldDelegate
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        // Disable the Save button while editing.
-        saveButton.isEnabled = false
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        // Hide the keyboard.
-        textField.resignFirstResponder()
-        return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        updateSaveButtonState()
-        navigationItem.title = textField.text
-    }
-    
+   
     override func viewDidLoad() {
         super.viewDidLoad()
         // Handle the text field’s user input through delegate callbacks.
        titleTextField.delegate = self
         
-        // Set up views if editing an existing Meal.
+        // Set up views if editing an existing List.
         if let list = list {
             navigationItem.title = list.title
             titleTextField.text = list.title
-            notesTextField.text = list.notes
+            notesTextView.text = list.notes
         }
         
-        // Enable the Save button only if the text field has a valid Meal name.
-        updateSaveButtonState()
+        // Enable the Save button only if the text field has a valid List name.
+      //  updateSaveButtonState()
         
     }
     
@@ -92,20 +76,47 @@ class ListDetailTableViewController: UITableViewController, UITextFieldDelegate,
         }
         
         let title = titleTextField.text ?? ""
-        let notes = notesTextField.text ?? ""
-        
+        let notes = notesTextView.text ?? ""
         
         // Set the meal to be passed to MealTableViewController after the unwind segue.
         list = List(title: title, notes: notes, isCompleted: false)
         
     }
     
-    private func updateSaveButtonState() {
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        
+        if saveButton === sender as? UIBarButtonItem {
+            
+            guard let name = titleTextField.text else { return true }
+            
+            if (name.isEmpty) {
+                
+                let alertController = UIAlertController(title: "Empty ToDo", message:
+                    "Please enter a to-do before saving", preferredStyle: UIAlertControllerStyle.alert)
+                
+                alertController.addAction(UIAlertAction(title: "Okay, Got it!", style: UIAlertActionStyle.default,handler: nil))
+                
+                self.present(alertController, animated: true, completion: nil)
+                
+                return false
+                
+            } else {
+                return true
+                
+            }
+            
+        }
+        
+        return true
+    }
+    
+   /* private func updateSaveButtonState() {
         // Disable the Save button if the text field is empty.
         let text = titleTextField.text ?? ""
         saveButton.isEnabled = !text.isEmpty
     }
-
+*/
  
     /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
