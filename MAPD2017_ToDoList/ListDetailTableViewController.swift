@@ -2,7 +2,11 @@
 //  ListDetailTableViewController.swift
 //  MAPD2017_ToDoList
 //
-//  Created by Akshit Upneja on 2017-12-25.
+//  Team Members:
+//  Akshit Upneja (300976590)
+//  santhosh damodharan (300964037)
+//  Amanpreet Kaur (300966930)
+//
 //  Copyright © 2017 Centennial College. All rights reserved.
 //
 
@@ -21,7 +25,7 @@ class ListDetailTableViewController: UITableViewController, UITextFieldDelegate,
             owningNavigationController.popViewController(animated: true)
         }
         else {
-            fatalError("The MealViewController is not inside a navigation controller.")
+            fatalError("The ListViewController is not inside a navigation controller.")
         }
     }
   
@@ -78,7 +82,7 @@ class ListDetailTableViewController: UITableViewController, UITextFieldDelegate,
         let title = titleTextField.text ?? ""
         let notes = notesTextView.text ?? ""
         
-        // Set the meal to be passed to MealTableViewController after the unwind segue.
+        // Set the list to be passed to ListTableViewController after the unwind segue.
         list = List(title: title, notes: notes, isCompleted: false)
         
     }
@@ -111,12 +115,7 @@ class ListDetailTableViewController: UITableViewController, UITextFieldDelegate,
         return true
     }
     
-   /* private func updateSaveButtonState() {
-        // Disable the Save button if the text field is empty.
-        let text = titleTextField.text ?? ""
-        saveButton.isEnabled = !text.isEmpty
-    }
-*/
+  
  
     /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

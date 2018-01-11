@@ -1,8 +1,12 @@
 //
 //  ListViewController.swift
 //  MAPD2017_ToDoList
+// This file controls the Table view with the list of to do's
 //
-//  Created by Akshit Upneja on 2017-12-31.
+//  Team Members:
+//  Akshit Upneja (300976590)
+//  santhosh damodharan (300964037)
+//  Amanpreet Kaur (300966930)
 //  Copyright © 2017 Centennial College. All rights reserved.
 //
 
@@ -19,7 +23,7 @@ class ListViewController: UITableViewController {
         // Use the edit button item provided by the table view controller.
         navigationItem.leftBarButtonItem = editButtonItem
         
-        // Load any saved meals, otherwise load sample data.
+        // Load any saved list, otherwise load sample data.
         if let savedLists = loadLists() {
             lists += savedLists
         }
@@ -55,8 +59,7 @@ class ListViewController: UITableViewController {
         
         cell.title.text = list.title
         cell.subtitle.text = list.notes
-        //cell.backgroundColor = list.color
-        //cell.listNameLabel.textColor = UIColor.white
+        
         //on checkbox click
         cell.onClick = { cell in
             
@@ -71,13 +74,30 @@ class ListViewController: UITableViewController {
             tableView.reloadData()
         }
         
-        //returning correct icons and colors for each item's status
+        let currentTitle : String = cell.title.text!
+        let currentsubTitle : String = cell.subtitle.text!
+        
+        let attributedTitle: NSMutableAttributedString = NSMutableAttributedString(string: currentTitle)
+        let attributedsubTitle: NSMutableAttributedString = NSMutableAttributedString(string: currentsubTitle)
+        //Setting Checked / Nonchecked image for each item's status
         if list.isCompleted {
-            // Introducing the statusji™
+            
+            
+            attributedTitle.addAttribute(NSAttributedStringKey.strikethroughStyle, value: 2, range: NSMakeRange(0, attributedTitle.length))
+            attributedsubTitle.addAttribute(NSAttributedStringKey.strikethroughStyle, value: 2, range: NSMakeRange(0, attributedsubTitle.length))
+            
+            cell.title.attributedText = attributedTitle
+            cell.subtitle.attributedText = attributedsubTitle
+        
             cell.title.textColor = UIColor.gray
             cell.subtitle.textColor = UIColor.gray
             cell.checkboxImage.image = UIImage(named:"checked")
+            
         } else {
+            cell.title.attributedText =  nil
+            cell.subtitle.attributedText =  nil
+            cell.title.text =  currentTitle
+            cell.subtitle.text =  currentsubTitle
           
             cell.title.textColor = UIColor.black
             cell.subtitle.textColor = UIColor.black
@@ -141,7 +161,7 @@ class ListViewController: UITableViewController {
         switch(segue.identifier ?? "") {
             
         case "AddList":
-            os_log("Adding a new meal.", log: OSLog.default, type: .debug)
+            os_log("Adding a new list.", log: OSLog.default, type: .debug)
             
         case "ShowDetail":
             guard let ListDetailViewController = segue.destination as? ListDetailTableViewController else {
@@ -171,20 +191,21 @@ class ListViewController: UITableViewController {
         if let sourceViewController = sender.source as? ListDetailTableViewController, let list = sourceViewController.list {
             
             if let selectedIndexPath = tableView.indexPathForSelectedRow {
-                // Update an existing meal.
+                // Update an existing record.
                 lists[selectedIndexPath.row] = list
                 tableView.reloadRows(at: [selectedIndexPath], with: .none)
             }
             else {
-                // Add a new meal.
+                // Add a new list.
                 let newIndexPath = IndexPath(row: lists.count, section: 0)
                 
                 lists.append(list)
                 tableView.insertRows(at: [newIndexPath], with: .automatic)
             }
             
-            // Save the meals.
+            // Save List.
             saveLists()
+            
         }
         
     }
@@ -197,11 +218,11 @@ class ListViewController: UITableViewController {
 
         
         guard let list1 = List(title: "Complete Homework", notes: "photo1", isCompleted: false) else {
-            fatalError("Unable to instantiate meal1")
+            fatalError("Unable to instantiate list1")
         }
         
         guard let list2 = List(title: "Buy Groceries", notes: "", isCompleted: false) else {
-            fatalError("Unable to instantiate meal1")
+            fatalError("Unable to instantiate list2")
         }
         
         lists += [list1, list2]
@@ -210,9 +231,9 @@ class ListViewController: UITableViewController {
     private func saveLists() {
         let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(lists, toFile: List.ArchiveURL.path)
         if isSuccessfulSave {
-            os_log("Meals successfully saved.", log: OSLog.default, type: .debug)
+            os_log("list successfully saved.", log: OSLog.default, type: .debug)
         } else {
-            os_log("Failed to save meals...", log: OSLog.default, type: .error)
+            os_log("Failed to save list...", log: OSLog.default, type: .error)
         }
     }
     
